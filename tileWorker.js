@@ -2,7 +2,7 @@ importScripts("suncalc-timestamp.js")
 
 const tileSize = 512;
 const nbPixel = tileSize * tileSize;
-const now = +(new Date());
+// const now = +(new Date());
 const canvas = new OffscreenCanvas(tileSize, tileSize);
 const ctx = canvas.getContext('2d');
 const imageData = new ImageData(tileSize, tileSize);
@@ -29,7 +29,7 @@ function pixelToLonLat(xInternal, yInternal, x, y, z, tileSize) {
 }
 
 
-async function generateTilePixel(tileX, tileY, tileZ) {
+async function generateTilePixel(tileX, tileY, tileZ, timestamp, color, opacity) {
   return new Promise((resolve) => {
     const k = 1.5;
     const degreeMargin = 6;
@@ -38,16 +38,16 @@ async function generateTilePixel(tileX, tileY, tileZ) {
       const xInternal = (i / 4) % tileSize;
       const yInternal = ~~((i / 4) / tileSize);
       const [lon, lat] = pixelToLonLat(xInternal, yInternal, tileX, tileY, tileZ, tileSize) 
-      const { altitude } = SunCalc.getPosition(now, lat, lon);
+      const { altitude } = SunCalc.getPosition(timestamp, lat, lon);
       const altitudeDeg = altitude * 180 / Math.PI;
       const degreesBelowHorizon = -altitudeDeg;
       
-      tilePixels[i + 3] = 180 * ( 1 / (1 + Math.exp(-k * (degreesBelowHorizon - (degreeMargin/2) )))   )
+      tilePixels[i + 3] = (255 * opacity) * ( 1 / (1 + Math.exp(-k * (degreesBelowHorizon - (degreeMargin/2) )))   )
   
       // dark blue
-      tilePixels[i] = 0;
-      tilePixels[i + 1] = 0;
-      tilePixels[i + 2] = 17;
+      tilePixels[i] = color[0];
+      tilePixels[i + 1] = color[1];
+      tilePixels[i + 2] = color[2];
     }
   
     imageData.data.set(tilePixels);
@@ -65,7 +65,7 @@ async function generateTilePixel(tileX, tileY, tileZ) {
 
 
 self.onmessage = async (evt) => {
-  const {x, y, z} = evt.data;
-  const tileBuffer = await generateTilePixel(x, y, z);
+  const {x, y, z, timestamp, color, opacity} = evt.data;
+  const tileBuffer = await generateTilePixel(x, y, z, timestamp, color, opacity);
   postMessage(tileBuffer, [tileBuffer])
 };
