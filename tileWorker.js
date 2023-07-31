@@ -29,11 +29,12 @@ function pixelToLonLat(xInternal, yInternal, x, y, z, tileSize) {
 }
 
 
-async function generateTilePixel(tileX, tileY, tileZ, timestamp, color) {
+async function generateTilePixel(tileX, tileY, tileZ, timestamp, color, debug) {
   return new Promise((resolve) => {
-    const k = 1.5;
+    
     const degreeMargin = 6;
-
+    const k = 4 / (degreeMargin / 2);
+    
     for (let i = 0; i < nbPixel * 4; i += 4) {
       const xInternal = (i / 4) % tileSize;
       const yInternal = ~~((i / 4) / tileSize);
@@ -42,9 +43,18 @@ async function generateTilePixel(tileX, tileY, tileZ, timestamp, color) {
       const altitudeDeg = altitude * 180 / Math.PI;
       const degreesBelowHorizon = -altitudeDeg;
       
-      tilePixels[i + 3] = 255 * ( 1 / (1 + Math.exp(-k * (degreesBelowHorizon - (degreeMargin/2) )))   )
-  
-      // dark blue
+      if (debug) {
+        if (altitudeDeg >= 0) {
+          tilePixels[i + 3] = 0;
+        } else if (altitudeDeg < -6) {
+          tilePixels[i + 3] = 255;
+        } else {
+          tilePixels[i + 3] = 128;
+        }
+      } else {
+        tilePixels[i + 3] = 255 * ( 1 / (1 + Math.exp(-k * (degreesBelowHorizon - (degreeMargin/2) )))   )
+      }
+      
       tilePixels[i] = color[0];
       tilePixels[i + 1] = color[1];
       tilePixels[i + 2] = color[2];
@@ -65,7 +75,7 @@ async function generateTilePixel(tileX, tileY, tileZ, timestamp, color) {
 
 
 self.onmessage = async (evt) => {
-  const {x, y, z, timestamp, color} = evt.data;
-  const tileBuffer = await generateTilePixel(x, y, z, timestamp, color);
+  const {x, y, z, timestamp, color, debug} = evt.data;
+  const tileBuffer = await generateTilePixel(x, y, z, timestamp, color, debug);
   postMessage(tileBuffer, [tileBuffer])
 };

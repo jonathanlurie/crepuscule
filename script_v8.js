@@ -7,11 +7,11 @@ const map = new maptilersdk.Map({
   maxPitch: 85,
 });
 
-const crepusculeLive = new CrepusculeLive(map, {debug: false});
+const crepuscule = new Crepuscule(map);
 
 // map.showTileBoundaries = true;
 
 
 map.on("load", () => {
-  crepusculeLive.init();
+  crepuscule.init();
 })
