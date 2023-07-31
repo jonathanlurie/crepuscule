@@ -13,7 +13,7 @@ class Crepuscule {
     const optionsWithDefault = {
       ... defaultOptions,
       ... options,
-    }
+    };
 
     this.map = map;
     this.color = optionsWithDefault.color.slice();
@@ -35,7 +35,7 @@ class Crepuscule {
     return new Promise((resolve) => {
       const tileWorker = new Worker("tileWorker.js");
       console.log("timestamp sent to worker:", timestamp);
-      tileWorker.postMessage({x, y, z, timestamp, color: this.color, opacity: this.opacity});
+      tileWorker.postMessage({x, y, z, timestamp, color: this.color});
     
       tileWorker.onmessage = (evt) => {
         console.log("refresh!");
@@ -77,6 +77,7 @@ class Crepuscule {
       source: this.sourceId,
       paint: {
         "raster-opacity-transition": {duration: 1000, delay: 0},
+        "raster-opacity": this.opacity,
       }
     })
     this.layer = map.getLayer(this.layerId);
@@ -109,3 +110,21 @@ class Crepuscule {
   }
 
 }
+
+
+
+
+
+
+
+// class CrepusculeLive {
+//   constructor(map, options = {}) {
+//     const optionsWithDefault = {
+//       ... defaultOptions,
+//       ... options,
+//     };
+
+//     this.crA = new Crepuscule
+
+//   }
+// }
