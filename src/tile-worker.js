@@ -20,9 +20,9 @@ var dayMs = 1000 * 60 * 60 * 24,
     J1970 = 2440588,
     J2000 = 2451545;
 
-function toJulian(date) { return date.valueOf() / dayMs - 0.5 + J1970; }
+function toJulian(timestamp) { return timestamp / dayMs - 0.5 + J1970; }
 function fromJulian(j)  { return new Date((j + 0.5 - J1970) * dayMs); }
-function toDays(date)   { return toJulian(date) - J2000; }
+function toDays(timestamp)   { return toJulian(timestamp) - J2000; }
 
 
 // general calculations for position
@@ -75,11 +75,11 @@ var SunCalc = {};
 
 // calculates sun position for a given date and latitude/longitude
 
-SunCalc.getPosition = function (date, lat, lng) {
+SunCalc.getPosition = function (timestamp, lat, lng) {
 
     var lw  = rad * -lng,
         phi = rad * lat,
-        d   = toDays(date),
+        d   = toDays(timestamp),
 
         c  = sunCoords(d),
         H  = siderealTime(d, lw) - c.ra;
@@ -133,7 +133,7 @@ function getSetJ(h, lw, phi, dec, n, M, L) {
 // calculates sun times for a given date, latitude/longitude, and, optionally,
 // the observer height (in meters) relative to the horizon
 
-SunCalc.getTimes = function (date, lat, lng, height) {
+SunCalc.getTimes = function (timestamp, lat, lng, height) {
 
     height = height || 0;
 
@@ -142,7 +142,7 @@ SunCalc.getTimes = function (date, lat, lng, height) {
 
         dh = observerAngle(height),
 
-        d = toDays(date),
+        d = toDays(timestamp),
         n = julianCycle(d, lw),
         ds = approxTransit(0, lw, n),
 
@@ -194,11 +194,11 @@ function moonCoords(d) { // geocentric ecliptic coordinates of the moon
     };
 }
 
-SunCalc.getMoonPosition = function (date, lat, lng) {
+SunCalc.getMoonPosition = function (timestamp, lat, lng) {
 
     var lw  = rad * -lng,
         phi = rad * lat,
-        d   = toDays(date),
+        d   = toDays(timestamp),
 
         c = moonCoords(d),
         H = siderealTime(d, lw) - c.ra,
@@ -221,9 +221,9 @@ SunCalc.getMoonPosition = function (date, lat, lng) {
 // based on http://idlastro.gsfc.nasa.gov/ftp/pro/astro/mphase.pro formulas and
 // Chapter 48 of "Astronomical Algorithms" 2nd edition by Jean Meeus (Willmann-Bell, Richmond) 1998.
 
-SunCalc.getMoonIllumination = function (date) {
+SunCalc.getMoonIllumination = function (timestamp) {
 
-    var d = toDays(date || new Date()),
+    var d = toDays(timestamp || (new Date()).valueOf()),
         s = sunCoords(d),
         m = moonCoords(d),
 
@@ -242,14 +242,14 @@ SunCalc.getMoonIllumination = function (date) {
 };
 
 
-function hoursLater(date, h) {
-    return new Date(date.valueOf() + h * dayMs / 24);
+function hoursLater(timestamp, h) {
+    return new Date(timestamp + h * dayMs / 24);
 }
 
 // calculations for moon rise/set times are based on http://www.stargazing.net/kepler/moonrise.html article
 
-SunCalc.getMoonTimes = function (date, lat, lng, inUTC) {
-    var t = new Date(date);
+SunCalc.getMoonTimes = function (timestamp, lat, lng, inUTC) {
+    var t = new Date(timestamp);
     if (inUTC) t.setUTCHours(0, 0, 0, 0);
     else t.setHours(0, 0, 0, 0);
 
@@ -306,6 +306,89 @@ SunCalc.getMoonTimes = function (date, lat, lng, inUTC) {
 // export as Node module / AMD module / browser variable
 if (typeof exports === 'object' && typeof module !== 'undefined') module.exports = SunCalc;
 else if (typeof define === 'function' && define.amd) define(SunCalc);
-else window.SunCalc = SunCalc;
+else self.SunCalc = SunCalc;
 
 }());
+
+
+// ----------------------------------------------------------------
+
+const tileSize = 512;
+const nbPixel = tileSize * tileSize;
+// const now = +(new Date());
+const canvas = new OffscreenCanvas(tileSize, tileSize);
+const ctx = canvas.getContext('2d');
+const imageData = new ImageData(tileSize, tileSize);
+const tilePixels = new Uint8ClampedArray(nbPixel * 4);
+
+
+function unitToLat(unit) {
+  const pi = Math.PI;
+  const atan = Math.atan;
+  const exp = Math.exp;
+  const thing1 = exp(unit * 2 * pi);
+  const thing2 = atan(thing1) - pi / 4;
+  return (thing2 * 360) / pi;
+}
+
+
+function pixelToLonLat(xInternal, yInternal, x, y, z, tileSize) {
+  const nbTilePerAxis = 2 ** z;
+  const mercUnitX = (1 / nbTilePerAxis) * (x + (xInternal / tileSize));
+  const mercUnitY = (1 / nbTilePerAxis) * (y + (yInternal / tileSize));
+  const lon = mercUnitX * 360 - 180;
+  const lat = unitToLat((1 - mercUnitY - 0.5))
+  return [lon, lat];
+}
+
+
+async function generateTilePixel(tileX, tileY, tileZ, timestamp, color, debug) {
+  return new Promise((resolve) => {
+    
+    const degreeMargin = 6;
+    const k = 4 / (degreeMargin / 2);
+    
+    for (let i = 0; i < nbPixel * 4; i += 4) {
+      const xInternal = (i / 4) % tileSize;
+      const yInternal = ~~((i / 4) / tileSize);
+      const [lon, lat] = pixelToLonLat(xInternal, yInternal, tileX, tileY, tileZ, tileSize) 
+      const { altitude } = SunCalc.getPosition(timestamp, lat, lon);
+      const altitudeDeg = altitude * 180 / Math.PI;
+      const degreesBelowHorizon = -altitudeDeg;
+      
+      if (debug) {
+        if (altitudeDeg >= 0) {
+          tilePixels[i + 3] = 0;
+        } else if (altitudeDeg < -6) {
+          tilePixels[i + 3] = 255;
+        } else {
+          tilePixels[i + 3] = 128;
+        }
+      } else {
+        tilePixels[i + 3] = 255 * ( 1 / (1 + Math.exp(-k * (degreesBelowHorizon - (degreeMargin/2) )))   )
+      }
+      
+      tilePixels[i] = color[0];
+      tilePixels[i + 1] = color[1];
+      tilePixels[i + 2] = color[2];
+    }
+  
+    imageData.data.set(tilePixels);
+    ctx.putImageData(imageData, 0, 0);
+
+    canvas.convertToBlob()
+    .then((blob) => {
+      return blob.arrayBuffer()
+    })
+    .then((buff) => {
+      resolve(buff)
+    })
+  })
+}
+
+
+self.onmessage = async (evt) => {
+  const {x, y, z, timestamp, color, debug} = evt.data;
+  const tileBuffer = await generateTilePixel(x, y, z, timestamp, color, debug);
+  postMessage(tileBuffer, [tileBuffer])
+};

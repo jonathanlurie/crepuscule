@@ -7,7 +7,6 @@
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v1.1.1/maptiler-sdk.umd.min.js"></script>
   <link href="https://cdn.maptiler.com/maptiler-sdk-js/v1.1.1/maptiler-sdk.css" rel="stylesheet" />
   
-  <script src="suncalc-timestamp.js"></script>
  
   
   <style>
@@ -21,7 +20,27 @@
 </head>
 <body>
   <div id="map"></div>
-  <script src="Crepuscule.js"></script>
-  <script src="script.js"></script>
+  <script src="crepuscule.umd.js"></script>
+  <script>
+
+  maptilersdk.config.apiKey = 'bod4IIn9bwK8mnZIk49v';
+  
+  const map = new maptilersdk.Map({
+    container: 'map', // container's id or the HTML element to render the map
+    style: maptilersdk.MapStyle.BACKDROP,
+    hash: true,
+    maxPitch: 85,
+  });
+  
+  const crepusculeLive = new crepuscule.CrepusculeLive(map, {debug: false});
+  
+  // map.showTileBoundaries = true;
+  
+  
+  map.on("load", () => {
+    crepusculeLive.init();
+  })
+  
+  </script>
 </body>
 </html>
