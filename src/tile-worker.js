@@ -1,3 +1,8 @@
+// The first part of this file is a modified version of VVolodymyr Agafonkin's Suncalc:
+// https://github.com/mourner/suncalc
+// The modification consists in .getPosition() using a unix timestamps instead of a date
+// This is because it's serializes better to pass from the main thread to a worker thread.
+
 (function () { 'use strict';
 
 // shortcuts for easier to read formulas
@@ -310,16 +315,8 @@ else self.SunCalc = SunCalc;
 
 }());
 
-
+// END of Suncalc
 // ----------------------------------------------------------------
-
-const tileSize = 512;
-const nbPixel = tileSize * tileSize;
-// const now = +(new Date());
-const canvas = new OffscreenCanvas(tileSize, tileSize);
-const ctx = canvas.getContext('2d');
-const imageData = new ImageData(tileSize, tileSize);
-const tilePixels = new Uint8ClampedArray(nbPixel * 4);
 
 
 function unitToLat(unit) {
@@ -344,10 +341,62 @@ function pixelToLonLat(xInternal, yInternal, x, y, z, tileSize) {
 
 async function generateTilePixel(tileX, tileY, tileZ, timestamp, color, debug) {
   return new Promise((resolve) => {
-    
+    const initialTileSize = 128;
     const degreeMargin = 6;
     const k = 4 / (degreeMargin / 2);
-    
+    const halfTileSize = ~~(initialTileSize / 2);
+
+    // We are sending some probes to check if it's worth computing the whole tile
+    // or if it can be made much smaller (2x2px) because it contains only the same data.
+    //
+    //     A_______F_______D
+    //     |               |
+    //     |               |
+    //     H       E       I
+    //     |               |
+    //     |               |
+    //     B_______G_______C
+    //
+    // For each tile, we send those probes and if the value is always above 0
+    // always below -degreeMargin then we make the tile smaller.
+    // This divides by ~200 the time to compute a tile
+
+    // Probe positions
+    const probePositions = [
+        {x: 0, y: 0}, // A: left top
+        {x: 0, y: initialTileSize - 1}, // B: left bottom
+        {x: initialTileSize - 1, y: initialTileSize - 1}, // C: right bottom
+        {x: initialTileSize - 1, y: 0}, // D: right top
+        {x: halfTileSize, y: halfTileSize}, // E: center middle
+        {x: halfTileSize, y: 0}, // F: center top
+        {x: halfTileSize, y: initialTileSize - 1}, // G: center bottom
+        {x: 0, y: halfTileSize}, // H: left middle
+        {x: initialTileSize - 1, y: halfTileSize}, // I: right middle
+    ]
+
+    const probeAltitudes = probePositions.map((pos) => {
+        const [lon, lat] = pixelToLonLat(pos.x, pos.y, tileX, tileY, tileZ, initialTileSize) 
+        const { altitude } = SunCalc.getPosition(timestamp, lat, lon);
+        return altitude * 180 / Math.PI;
+    })
+
+    const allSameDay = probeAltitudes.every((el) => {
+        return el > 0;
+    })
+
+    const allSameNight = probeAltitudes.every((el) => {
+        return el < -degreeMargin;
+    })
+
+    const tileSize = allSameDay || allSameNight ? 2 : initialTileSize;
+    const nbPixel = tileSize * tileSize;
+
+    // const now = +(new Date());
+    const canvas = new OffscreenCanvas(tileSize, tileSize);
+    const ctx = canvas.getContext('2d');
+    const imageData = new ImageData(tileSize, tileSize);    
+    const tilePixels = new Uint8ClampedArray(nbPixel * 4);
+
     for (let i = 0; i < nbPixel * 4; i += 4) {
       const xInternal = (i / 4) % tileSize;
       const yInternal = ~~((i / 4) / tileSize);
