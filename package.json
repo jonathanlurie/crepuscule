@@ -1,0 +1,54 @@
+{
+  "name": "crepuscule",
+  "version": "1.0.0",
+  "description": "Sunlight raster tile layer, with twilight, dynamically generated for MapLibre GL and MapTiler SDK.",
+  "module": "dist/crepuscule.js",
+  "types": "dist/crepuscule.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/crepuscule.js"
+    }
+  },
+  "author": "Jonathan Lurie",
+  "keywords": [
+    "MapLibre",
+    "MapTiler SDK",
+    "layer",
+    "raster",
+    "dynamic"
+  ],
+  "scripts": {
+    "format": "prettier --write \"src/**/*.{js,ts,tsx}\"",
+    "lint": "eslint --fix \"src/**/*.{js,ts}\"",
+    "make": "npm run format; npm run lint; npm run build",
+    "dev": "vite -c vite.config-es.ts",
+    "build": "npm run build-es; npm run build-umd; cp build/* examples/",
+    "build-dev": "NODE_ENV=dev npm run build-es; NODE_ENV=dev npm run build-umd; cp build/* examples/",
+    "build-umd": "tsc && vite build -c vite.config-umd.ts",
+    "build-es": "tsc && vite build -c vite.config-es.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonathanlurie/crepuscule.git"
+  },
+  "license": "",
+  "devDependencies": {
+    "@types/node": "^20.4.5",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "eslint": "^8.44.0",
+    "eslint-import-resolver-typescript": "^3.5.5",
+    "eslint-plugin-import": "^2.28.0",
+    "prettier": "^2.8.8",
+    "typescript": "^5.0.4",
+    "vite": "^4.4.8",
+    "vite-plugin-dts": "^3.4.0",
+    "vite-plugin-plain-text": "^1.4.2"
+  },
+  "dependencies": {
+  },
+  "peerDependencies": {
+    "@maptiler/sdk": "^1.1.1"
+  }
+}

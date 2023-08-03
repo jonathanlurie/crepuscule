@@ -1,29 +1,70 @@
+import {
+  Map,
+  addProtocol,
+  RequestParameters,
+  ResponseCallback,
+  Cancelable,
+  Source
+} from "@maptiler/sdk";
+
+// import TileWorker from './worker?worker';
+
+// @ts-ignore
+import TileWorker from './tile-worker?worker&inline'
+
 const CREPUSCULE_PROTOCOL_NAMESPACE_PATTERN = "crepuscule_protocole_<UNIQUE>";
 const CREPUSCULE_SOURCE_ID_PATTERN = "crepuscule_source_<UNIQUE>";
 const CREPUSCULE_LAYER_ID_PATTERN = "crepuscule_layer_<UNIQUE>";
 
-const defaultOptions = {
+
+export type Color = [number, number, number];
+
+
+export type CrepusculeOptions = {
+  color?: Color,
+  opacity?: number,
+  date?: Date,
+  debug?: boolean,
+}
+
+export type TransitionOptions = {
+  duration?: number,
+  delay?: number,
+}
+
+const defaultOptions: CrepusculeOptions = {
   color: [0, 0, 17],
   opacity: 0.7,
   date: new Date(),
   debug: false,
 }
 
-class Crepuscule {
-  constructor(map, options = {}) {
-    const optionsWithDefault = {
+
+export class Crepuscule {
+  private map: Map;
+  private color: Color;
+  private opacity: number;
+  private date: Date;
+  private unique: string;
+  private protocolNamespace: string;
+  private tileUriPattern: string;
+  private layerId: string;
+  private sourceId: string;
+  private debug: boolean;
+  private source!: Source;
+
+
+  constructor(map: Map, options: CrepusculeOptions = {}) {
+    const optionsWithDefault: CrepusculeOptions = {
       ... defaultOptions,
       ... options,
     };
 
     this.map = map;
-    this.color = optionsWithDefault.color.slice();
-    this.opacity = optionsWithDefault.opacity;
-    this.date = optionsWithDefault.date;
-    this.source = null; // Added at init()
-    this.layer = null; // Added at init()
-    this.tilesToMake = 0;
-    this.debug = optionsWithDefault.debug;
+    this.color = (optionsWithDefault.color as Color).slice() as Color;
+    this.opacity = optionsWithDefault.opacity as number;
+    this.date = optionsWithDefault.date as Date;
+    this.debug = optionsWithDefault.debug as boolean;
     
     this.unique = (Math.random() + 1).toString(36).substring(2);
     this.protocolNamespace = CREPUSCULE_PROTOCOL_NAMESPACE_PATTERN.replace("<UNIQUE>", this.unique);
@@ -33,76 +74,93 @@ class Crepuscule {
   }
 
 
-  async generateTilePixelOnWorker(x, y, z, timestamp) {
+  async generateTilePixelOnWorker(x: number, y: number, z: number, timestamp: number) {
     return new Promise((resolve) => {
-      const tileWorker = new Worker("tileWorker.js");
+      
+      
+      // const tileWorker = new TileWorker(); //Worker("tileWorker.js");
+
+      const tileWorker = new TileWorker();
+
+      
+
+
+      // const tileWorker = new Worker(
+      //   new URL('./tile-worker.js', import.meta.url),
+      //   {type: 'module'}
+      // );
+
+
       tileWorker.postMessage({x, y, z, timestamp, color: this.color, debug: this.debug});
     
-      tileWorker.onmessage = (evt) => {
+      tileWorker.onmessage = (evt: MessageEvent<any>) => {
         resolve(evt.data)
       };
     })
   }
 
 
+
   init() {
     // Adding the protocole
-    maptilersdk.addProtocol(this.protocolNamespace, (params, callback) => {
-      const [z, x, y, timestamp] = params.url.split("/").pop().split("-").map(el => parseFloat(el));
-      this.tilesToMake ++;
+    addProtocol(this.protocolNamespace, (params: RequestParameters, callback: ResponseCallback<any>): Cancelable => {
+      if (!params.url) throw new Error("");
+
+      const [z, x, y, timestamp] = ((params.url.split("/") as Array<string>).pop() as string).split("-").map((el: string): number => parseFloat(el));
     
       this.generateTilePixelOnWorker(x, y, z, timestamp)
       .then((arrbuff) => {
         callback(null, arrbuff, null, null);
-        this.tilesToMake --;
-        // if(onMadeATile) onMadeATile();
       })
       return { cancel: () => { } };
     });
 
     // Adding the source
-    map.addSource(this.sourceId, {
+    this.map.addSource(this.sourceId, {
       type: "raster",
         tiles: [this.tileUriPattern],
         tileSize: 512
     });
-    this.source = map.getSource(this.sourceId);
+
+    this.source = this.map.getSource(this.sourceId) as Source;
   
     // adding the layer
-    map.addLayer({
+    this.map.addLayer({
       id: this.layerId, 
       type: "raster",
       source: this.sourceId,
       paint: {
+        // @ts-ignore
         "raster-opacity-transition": {duration: 1000, delay: 0},
         "raster-opacity": this.opacity,
       }
     })
-    this.layer = map.getLayer(this.layerId);
   }
 
 
-  setOpacity(o, options = {}) {
+  setOpacity(o: number, options: TransitionOptions = {}) {
     this.opacity = o;
     this.map.setPaintProperty(this.layerId, "raster-opacity-transition", {duration: 0, delay: 0, ...options});
     this.map.setPaintProperty(this.layerId, "raster-opacity", o, {validate: false})
   }
 
 
-  hide(options = {}) {
+  hide(options: TransitionOptions = {}) {
     this.setOpacity(0, options);
   }
   
   
-  show(options = {}) {
+  show(options: TransitionOptions = {}) {
     this.setOpacity(this.opacity, options);
   }
 
 
-  setDate(date) {
+  setDate(date: Date) {
     this.date = date;
     this.tileUriPattern = `${this.protocolNamespace}://{z}-{x}-{y}-${+this.date}`;
+    // @ts-ignore
     this.source.tiles[0] = this.tileUriPattern;
+    // @ts-ignore
     this.source.load();
   }
 
@@ -114,14 +172,21 @@ class Crepuscule {
 
 
 
-class CrepusculeLive {
-  constructor(map, options = {}) {
+export class CrepusculeLive {
+  private opacity: number;
+  private crA: Crepuscule;
+  private crB: Crepuscule;
+  private usingA: boolean;
+  private intervalId!: NodeJS.Timeout | null;
+
+
+  constructor(map: Map, options: CrepusculeOptions = {}) {
     const optionsWithDefault = {
       ... defaultOptions,
       ... options,
     };
 
-    this.opacity = optionsWithDefault.opacity;
+    this.opacity = optionsWithDefault.opacity as number;
 
     if (optionsWithDefault.debug) {
       this.crA = new Crepuscule(map, {...optionsWithDefault, color: [70, 0, 0]});
@@ -132,7 +197,6 @@ class CrepusculeLive {
     }
     
     this.usingA = true;
-
     this.intervalId = null;
   }
 
@@ -140,9 +204,9 @@ class CrepusculeLive {
   init() {
     this.crA.init();
     this.crB.init();
-
     this.start();
   }
+  
 
   start() {
     this.intervalId = setInterval(() => {
@@ -151,6 +215,7 @@ class CrepusculeLive {
   }
 
   stop() {
+    // @ts-ignore
     clearInterval(this.intervalId);
     this.intervalId = null;
   }
