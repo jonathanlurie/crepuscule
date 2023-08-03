@@ -22,11 +22,12 @@
     "format": "prettier --write \"src/**/*.{js,ts,tsx}\"",
     "lint": "eslint --fix \"src/**/*.{js,ts}\"",
     "make": "npm run format; npm run lint; npm run build",
-    "dev": "vite -c vite.config-es.ts",
-    "build": "npm run build-es; npm run build-umd; cp build/* examples/",
-    "build-dev": "NODE_ENV=dev npm run build-es; NODE_ENV=dev npm run build-umd; cp build/* examples/",
+    "dev-orig": "vite -c vite.config-es.ts",
+    "build": "npm run build-es; npm run build-umd",
+    "build-dev": "NODE_ENV=dev npm run build-es; NODE_ENV=dev npm run build-umd",
     "build-umd": "tsc && vite build -c vite.config-umd.ts",
-    "build-es": "tsc && vite build -c vite.config-es.ts"
+    "build-es": "tsc && vite build -c vite.config-es.ts",
+    "dev": "NODE_ENV=dev tsc && vite build -w -c vite.config-umd.ts"
   },
   "repository": {
     "type": "git",

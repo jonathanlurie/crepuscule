@@ -430,7 +430,7 @@ async function generateTilePixel(tileX, tileY, tileZ, timestamp, color, debug) {
       return blob.arrayBuffer()
     })
     .then((buff) => {
-      resolve(buff)
+      resolve(buff);
     })
   })
 }

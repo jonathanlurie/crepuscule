@@ -82,19 +82,11 @@ export class Crepuscule {
 
       const tileWorker = new TileWorker();
 
-      
-
-
-      // const tileWorker = new Worker(
-      //   new URL('./tile-worker.js', import.meta.url),
-      //   {type: 'module'}
-      // );
-
-
       tileWorker.postMessage({x, y, z, timestamp, color: this.color, debug: this.debug});
     
       tileWorker.onmessage = (evt: MessageEvent<any>) => {
-        resolve(evt.data)
+        resolve(evt.data);
+        tileWorker.terminate();
       };
     })
   }
