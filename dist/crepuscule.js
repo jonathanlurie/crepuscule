@@ -1,21 +1,21 @@
-var y = Object.defineProperty;
-var b = (e, t, i) => t in e ? y(e, t, { enumerable: !0, configurable: !0, writable: !0, value: i }) : e[t] = i;
-var s = (e, t, i) => (b(e, typeof t != "symbol" ? t + "" : t, i), i);
-import { addProtocol as r } from "@maptiler/sdk";
-const K = "KGZ1bmN0aW9uKCl7InVzZSBzdHJpY3QiOyhmdW5jdGlvbigpe3ZhciBNPU1hdGguUEksYT1NYXRoLnNpbixyPU1hdGguY29zLHA9TWF0aC50YW4sbT1NYXRoLmFzaW4sZz1NYXRoLmF0YW4yLGI9TWF0aC5hY29zLGk9TS8xODAsQT0xZTMqNjAqNjAqMjQsYz0yNDQwNTg4LHo9MjQ1MTU0NTtmdW5jdGlvbiBOKHQpe3JldHVybiB0L0EtLjUrY31mdW5jdGlvbiBTKHQpe3JldHVybiBuZXcgRGF0ZSgodCsuNS1jKSpBKX1mdW5jdGlvbiBVKHQpe3JldHVybiBOKHQpLXp9dmFyIGs9aSoyMy40Mzk3O2Z1bmN0aW9uIEIodCxuKXtyZXR1cm4gZyhhKHQpKnIoayktcChuKSphKGspLHIodCkpfWZ1bmN0aW9uIHEodCxuKXtyZXR1cm4gbShhKG4pKnIoaykrcihuKSphKGspKmEodCkpfWZ1bmN0aW9uIEsodCxuLGUpe3JldHVybiBnKGEodCkscih0KSphKG4pLXAoZSkqcihuKSl9ZnVuY3Rpb24gUSh0LG4sZSl7cmV0dXJuIG0oYShuKSphKGUpK3IobikqcihlKSpyKHQpKX1mdW5jdGlvbiBWKHQsbil7cmV0dXJuIGkqKDI4MC4xNiszNjAuOTg1NjIzNSp0KS1ufWZ1bmN0aW9uIHN0KHQpe3JldHVybiB0PDAmJih0PTApLDI5NjdlLTcvTWF0aC50YW4odCsuMDAzMTI1MzYvKHQrLjA4OTAxMTc5KSl9ZnVuY3Rpb24gVyh0KXtyZXR1cm4gaSooMzU3LjUyOTErLjk4NTYwMDI4KnQpfWZ1bmN0aW9uIFoodCl7dmFyIG49aSooMS45MTQ4KmEodCkrLjAyKmEoMip0KSszZS00KmEoMyp0KSksZT1pKjEwMi45MzcyO3JldHVybiB0K24rZStNfWZ1bmN0aW9uIF8odCl7dmFyIG49Vyh0KSxlPVoobik7cmV0dXJue2RlYzpxKGUsMCkscmE6QihlLDApfX12YXIgaD17fTtoLmdldFBvc2l0aW9uPWZ1bmN0aW9uKHQsbixlKXt2YXIgdT1pKi1lLG89aSpuLGY9VSh0KSxzPV8oZiksZD1WKGYsdSktcy5yYTtyZXR1cm57YXppbXV0aDpLKGQsbyxzLmRlYyksYWx0aXR1ZGU6UShkLG8scy5kZWMpfX07dmFyIFI9aC50aW1lcz1bWy0uODMzLCJzdW5yaXNlIiwic3Vuc2V0Il0sWy0uMywic3VucmlzZUVuZCIsInN1bnNldFN0YXJ0Il0sWy02LCJkYXduIiwiZHVzayJdLFstMTIsIm5hdXRpY2FsRGF3biIsIm5hdXRpY2FsRHVzayJdLFstMTgsIm5pZ2h0RW5kIiwibmlnaHQiXSxbNiwiZ29sZGVuSG91ckVuZCIsImdvbGRlbkhvdXIiXV07aC5hZGRUaW1lPWZ1bmN0aW9uKHQsbixlKXtSLnB1c2goW3QsbixlXSl9O3ZhciAkPTllLTQ7ZnVuY3Rpb24gdXQodCxuKXtyZXR1cm4gTWF0aC5yb3VuZCh0LSQtbi8oMipNKSl9ZnVuY3Rpb24gdHQodCxuLGUpe3JldHVybiAkKyh0K24pLygyKk0pK2V9ZnVuY3Rpb24gbnQodCxuLGUpe3JldHVybiB6K3QrLjAwNTMqYShuKS0uMDA2OSphKDIqZSl9ZnVuY3Rpb24gY3QodCxuLGUpe3JldHVybiBiKChhKHQpLWEobikqYShlKSkvKHIobikqcihlKSkpfWZ1bmN0aW9uIGZ0KHQpe3JldHVybi0yLjA3NipNYXRoLnNxcnQodCkvNjB9ZnVuY3Rpb24gZHQodCxuLGUsdSxvLGYscyl7dmFyIGQ9Y3QodCxlLHUpLGw9dHQoZCxuLG8pO3JldHVybiBudChsLGYscyl9aC5nZXRUaW1lcz1mdW5jdGlvbih0LG4sZSx1KXt1PXV8fDA7dmFyIG89aSotZSxmPWkqbixzPWZ0KHUpLGQ9VSh0KSxsPXV0KGQsbyksdz10dCgwLG8sbCksUD1XKHcpLEM9WihQKSxIPXEoQywwKSx5PW50KHcsUCxDKSxJLEUsRCx4LEosaix2PXtzb2xhck5vb246Uyh5KSxuYWRpcjpTKHktLjUpfTtmb3IoST0wLEU9Ui5sZW5ndGg7STxFO0krPTEpRD1SW0ldLHg9KERbMF0rcykqaSxKPWR0KHgsbyxmLEgsbCxQLEMpLGo9eS0oSi15KSx2W0RbMV1dPVMoaiksdltEWzJdXT1TKEopO3JldHVybiB2fTtmdW5jdGlvbiBldCh0KXt2YXIgbj1pKigyMTguMzE2KzEzLjE3NjM5Nip0KSxlPWkqKDEzNC45NjMrMTMuMDY0OTkzKnQpLHU9aSooOTMuMjcyKzEzLjIyOTM1KnQpLG89bitpKjYuMjg5KmEoZSksZj1pKjUuMTI4KmEodSkscz0zODUwMDEtMjA5MDUqcihlKTtyZXR1cm57cmE6QihvLGYpLGRlYzpxKG8sZiksZGlzdDpzfX1oLmdldE1vb25Qb3NpdGlvbj1mdW5jdGlvbih0LG4sZSl7dmFyIHU9aSotZSxvPWkqbixmPVUodCkscz1ldChmKSxkPVYoZix1KS1zLnJhLGw9UShkLG8scy5kZWMpLHc9ZyhhKGQpLHAobykqcihzLmRlYyktYShzLmRlYykqcihkKSk7cmV0dXJuIGw9bCtzdChsKSx7YXppbXV0aDpLKGQsbyxzLmRlYyksYWx0aXR1ZGU6bCxkaXN0YW5jZTpzLmRpc3QscGFyYWxsYWN0aWNBbmdsZTp3fX0saC5nZXRNb29uSWxsdW1pbmF0aW9uPWZ1bmN0aW9uKHQpe3ZhciBuPVUodHx8bmV3IERhdGUoKS52YWx1ZU9mKCkpLGU9XyhuKSx1PWV0KG4pLG89MTQ5NTk4ZTMsZj1iKGEoZS5kZWMpKmEodS5kZWMpK3IoZS5kZWMpKnIodS5kZWMpKnIoZS5yYS11LnJhKSkscz1nKG8qYShmKSx1LmRpc3QtbypyKGYpKSxkPWcocihlLmRlYykqYShlLnJhLXUucmEpLGEoZS5kZWMpKnIodS5kZWMpLXIoZS5kZWMpKmEodS5kZWMpKnIoZS5yYS11LnJhKSk7cmV0dXJue2ZyYWN0aW9uOigxK3IocykpLzIscGhhc2U6LjUrLjUqcyooZDwwPy0xOjEpL01hdGguUEksYW5nbGU6ZH19O2Z1bmN0aW9uIE8odCxuKXtyZXR1cm4gbmV3IERhdGUodCtuKkEvMjQpfWguZ2V0TW9vblRpbWVzPWZ1bmN0aW9uKHQsbixlLHUpe3ZhciBvPW5ldyBEYXRlKHQpO3U/by5zZXRVVENIb3VycygwLDAsMCwwKTpvLnNldEhvdXJzKDAsMCwwLDApO2Zvcih2YXIgZj0uMTMzKmkscz1oLmdldE1vb25Qb3NpdGlvbihvLG4sZSkuYWx0aXR1ZGUtZixkLGwsdyxQLEMsSCx5LEksRSxELHgsSixqLHY9MTt2PD0yNCYmKGQ9aC5nZXRNb29uUG9zaXRpb24oTyhvLHYpLG4sZSkuYWx0aXR1ZGUtZixsPWguZ2V0TW9vblBvc2l0aW9uKE8obyx2KzEpLG4sZSkuYWx0aXR1ZGUtZixDPShzK2wpLzItZCxIPShsLXMpLzIseT0tSC8oMipDKSxJPShDKnkrSCkqeStkLEU9SCpILTQqQypkLEQ9MCxFPj0wJiYoaj1NYXRoLnNxcnQoRSkvKE1hdGguYWJzKEMpKjIpLHg9eS1qLEo9eStqLE1hdGguYWJzKHgpPD0xJiZEKyssTWF0aC5hYnMoSik8PTEmJkQrKyx4PC0xJiYoeD1KKSksRD09PTE/czwwP3c9dit4OlA9dit4OkQ9PT0yJiYodz12KyhJPDA/Sjp4KSxQPXYrKEk8MD94OkopKSwhKHcmJlApKTt2Kz0yKXM9bDt2YXIgRj17fTtyZXR1cm4gdyYmKEYucmlzZT1PKG8sdykpLFAmJihGLnNldD1PKG8sUCkpLCF3JiYhUCYmKEZbST4wPyJhbHdheXNVcCI6ImFsd2F5c0Rvd24iXT0hMCksRn0sdHlwZW9mIGV4cG9ydHM9PSJvYmplY3QiJiZ0eXBlb2YgbW9kdWxlPCJ1Ij9tb2R1bGUuZXhwb3J0cz1oOnR5cGVvZiBkZWZpbmU9PSJmdW5jdGlvbiImJmRlZmluZS5hbWQ/ZGVmaW5lKGgpOnNlbGYuU3VuQ2FsYz1ofSkoKTtjb25zdCBUPTUxMixYPVQqVCxZPW5ldyBPZmZzY3JlZW5DYW52YXMoVCxUKSxhdD1ZLmdldENvbnRleHQoIjJkIiksRz1uZXcgSW1hZ2VEYXRhKFQsVCksTD1uZXcgVWludDhDbGFtcGVkQXJyYXkoWCo0KTtmdW5jdGlvbiBydChNKXtjb25zdCBhPU1hdGguUEkscj1NYXRoLmF0YW4scD1NYXRoLmV4cCxtPXAoTSoyKmEpO3JldHVybihyKG0pLWEvNCkqMzYwL2F9ZnVuY3Rpb24gb3QoTSxhLHIscCxtLGcpe2NvbnN0IGI9MioqbSxpPTEvYioocitNL2cpLEE9MS9iKihwK2EvZyksYz1pKjM2MC0xODAsej1ydCgxLUEtLjUpO3JldHVybltjLHpdfWFzeW5jIGZ1bmN0aW9uIGl0KE0sYSxyLHAsbSxnKXtyZXR1cm4gbmV3IFByb21pc2UoYj0+e2NvbnN0IEE9MS4zMzMzMzMzMzMzMzMzMzMzO2ZvcihsZXQgYz0wO2M8WCo0O2MrPTQpe2NvbnN0IHo9Yy80JVQsTj1+fihjLzQvVCksW1MsVV09b3QoeixOLE0sYSxyLFQpLHthbHRpdHVkZTprfT1TdW5DYWxjLmdldFBvc2l0aW9uKHAsVSxTKSxCPWsqMTgwL01hdGguUEkscT0tQjtnP0I+PTA/TFtjKzNdPTA6QjwtNj9MW2MrM109MjU1OkxbYyszXT0xMjg6TFtjKzNdPTI1NSooMS8oMStNYXRoLmV4cCgtQSoocS02LzIpKSkpLExbY109bVswXSxMW2MrMV09bVsxXSxMW2MrMl09bVsyXX1HLmRhdGEuc2V0KEwpLGF0LnB1dEltYWdlRGF0YShHLDAsMCksWS5jb252ZXJ0VG9CbG9iKCkudGhlbihjPT5jLmFycmF5QnVmZmVyKCkpLnRoZW4oYz0+e2IoYyl9KX0pfXNlbGYub25tZXNzYWdlPWFzeW5jIE09Pntjb25zdHt4OmEseTpyLHo6cCx0aW1lc3RhbXA6bSxjb2xvcjpnLGRlYnVnOmJ9PU0uZGF0YSxpPWF3YWl0IGl0KGEscixwLG0sZyxiKTtwb3N0TWVzc2FnZShpLFtpXSl9fSkoKTsK", h = typeof window < "u" && window.Blob && new Blob([atob(K)], { type: "text/javascript;charset=utf-8" });
-function L() {
-  let e;
+var u = Object.defineProperty;
+var L = (o, t, i) => t in o ? u(o, t, { enumerable: !0, configurable: !0, writable: !0, value: i }) : o[t] = i;
+var s = (o, t, i) => (L(o, typeof t != "symbol" ? t + "" : t, i), i);
+import { addProtocol as b } from "@maptiler/sdk";
+const a = "KGZ1bmN0aW9uKCl7InVzZSBzdHJpY3QiOyhmdW5jdGlvbigpe3ZhciBoPU1hdGguUEksaT1NYXRoLnNpbixhPU1hdGguY29zLG09TWF0aC50YW4seD1NYXRoLmFzaW4sTT1NYXRoLmF0YW4yLEQ9TWF0aC5hY29zLHM9aC8xODAsSD0xZTMqNjAqNjAqMjQsVT0yNDQwNTg4LHA9MjQ1MTU0NTtmdW5jdGlvbiAkKHQpe3JldHVybiB0L0gtLjUrVX1mdW5jdGlvbiBBKHQpe3JldHVybiBuZXcgRGF0ZSgodCsuNS1VKSpIKX1mdW5jdGlvbiBrKHQpe3JldHVybiAkKHQpLXB9dmFyIEI9cyoyMy40Mzk3O2Z1bmN0aW9uIHkodCxuKXtyZXR1cm4gTShpKHQpKmEoQiktbShuKSppKEIpLGEodCkpfWZ1bmN0aW9uIEUodCxuKXtyZXR1cm4geChpKG4pKmEoQikrYShuKSppKEIpKmkodCkpfWZ1bmN0aW9uIEYodCxuLGUpe3JldHVybiBNKGkodCksYSh0KSppKG4pLW0oZSkqYShuKSl9ZnVuY3Rpb24gUSh0LG4sZSl7cmV0dXJuIHgoaShuKSppKGUpK2EobikqYShlKSphKHQpKX1mdW5jdGlvbiBSKHQsbil7cmV0dXJuIHMqKDI4MC4xNiszNjAuOTg1NjIzNSp0KS1ufWZ1bmN0aW9uIHcodCl7cmV0dXJuIHQ8MCYmKHQ9MCksMjk2N2UtNy9NYXRoLnRhbih0Ky4wMDMxMjUzNi8odCsuMDg5MDExNzkpKX1mdW5jdGlvbiBvKHQpe3JldHVybiBzKigzNTcuNTI5MSsuOTg1NjAwMjgqdCl9ZnVuY3Rpb24gaih0KXt2YXIgbj1zKigxLjkxNDgqaSh0KSsuMDIqaSgyKnQpKzNlLTQqaSgzKnQpKSxlPXMqMTAyLjkzNzI7cmV0dXJuIHQrbitlK2h9ZnVuY3Rpb24gcSh0KXt2YXIgbj1vKHQpLGU9aihuKTtyZXR1cm57ZGVjOkUoZSwwKSxyYTp5KGUsMCl9fXZhciBmPXt9O2YuZ2V0UG9zaXRpb249ZnVuY3Rpb24odCxuLGUpe3ZhciB1PXMqLWUscj1zKm4sbD1rKHQpLGM9cShsKSxkPVIobCx1KS1jLnJhO3JldHVybnthemltdXRoOkYoZCxyLGMuZGVjKSxhbHRpdHVkZTpRKGQscixjLmRlYyl9fTt2YXIgRz1mLnRpbWVzPVtbLS44MzMsInN1bnJpc2UiLCJzdW5zZXQiXSxbLS4zLCJzdW5yaXNlRW5kIiwic3Vuc2V0U3RhcnQiXSxbLTYsImRhd24iLCJkdXNrIl0sWy0xMiwibmF1dGljYWxEYXduIiwibmF1dGljYWxEdXNrIl0sWy0xOCwibmlnaHRFbmQiLCJuaWdodCJdLFs2LCJnb2xkZW5Ib3VyRW5kIiwiZ29sZGVuSG91ciJdXTtmLmFkZFRpbWU9ZnVuY3Rpb24odCxuLGUpe0cucHVzaChbdCxuLGVdKX07dmFyIFY9OWUtNDtmdW5jdGlvbiBLKHQsbil7cmV0dXJuIE1hdGgucm91bmQodC1WLW4vKDIqaCkpfWZ1bmN0aW9uIFcodCxuLGUpe3JldHVybiBWKyh0K24pLygyKmgpK2V9ZnVuY3Rpb24gWih0LG4sZSl7cmV0dXJuIHArdCsuMDA1MyppKG4pLS4wMDY5KmkoMiplKX1mdW5jdGlvbiBpdCh0LG4sZSl7cmV0dXJuIEQoKGkodCktaShuKSppKGUpKS8oYShuKSphKGUpKSl9ZnVuY3Rpb24gYXQodCl7cmV0dXJuLTIuMDc2Kk1hdGguc3FydCh0KS82MH1mdW5jdGlvbiBydCh0LG4sZSx1LHIsbCxjKXt2YXIgZD1pdCh0LGUsdSksZz1XKGQsbixyKTtyZXR1cm4gWihnLGwsYyl9Zi5nZXRUaW1lcz1mdW5jdGlvbih0LG4sZSx1KXt1PXV8fDA7dmFyIHI9cyotZSxsPXMqbixjPWF0KHUpLGQ9ayh0KSxnPUsoZCxyKSxUPVcoMCxyLGcpLFM9byhUKSxDPWooUyksTD1FKEMsMCksej1aKFQsUyxDKSxJLE4sYixQLEosTyx2PXtzb2xhck5vb246QSh6KSxuYWRpcjpBKHotLjUpfTtmb3IoST0wLE49Ry5sZW5ndGg7STxOO0krPTEpYj1HW0ldLFA9KGJbMF0rYykqcyxKPXJ0KFAscixsLEwsZyxTLEMpLE89ei0oSi16KSx2W2JbMV1dPUEoTyksdltiWzJdXT1BKEopO3JldHVybiB2fTtmdW5jdGlvbiB0dCh0KXt2YXIgbj1zKigyMTguMzE2KzEzLjE3NjM5Nip0KSxlPXMqKDEzNC45NjMrMTMuMDY0OTkzKnQpLHU9cyooOTMuMjcyKzEzLjIyOTM1KnQpLHI9bitzKjYuMjg5KmkoZSksbD1zKjUuMTI4KmkodSksYz0zODUwMDEtMjA5MDUqYShlKTtyZXR1cm57cmE6eShyLGwpLGRlYzpFKHIsbCksZGlzdDpjfX1mLmdldE1vb25Qb3NpdGlvbj1mdW5jdGlvbih0LG4sZSl7dmFyIHU9cyotZSxyPXMqbixsPWsodCksYz10dChsKSxkPVIobCx1KS1jLnJhLGc9UShkLHIsYy5kZWMpLFQ9TShpKGQpLG0ocikqYShjLmRlYyktaShjLmRlYykqYShkKSk7cmV0dXJuIGc9Zyt3KGcpLHthemltdXRoOkYoZCxyLGMuZGVjKSxhbHRpdHVkZTpnLGRpc3RhbmNlOmMuZGlzdCxwYXJhbGxhY3RpY0FuZ2xlOlR9fSxmLmdldE1vb25JbGx1bWluYXRpb249ZnVuY3Rpb24odCl7dmFyIG49ayh0fHxuZXcgRGF0ZSgpLnZhbHVlT2YoKSksZT1xKG4pLHU9dHQobikscj0xNDk1OThlMyxsPUQoaShlLmRlYykqaSh1LmRlYykrYShlLmRlYykqYSh1LmRlYykqYShlLnJhLXUucmEpKSxjPU0ocippKGwpLHUuZGlzdC1yKmEobCkpLGQ9TShhKGUuZGVjKSppKGUucmEtdS5yYSksaShlLmRlYykqYSh1LmRlYyktYShlLmRlYykqaSh1LmRlYykqYShlLnJhLXUucmEpKTtyZXR1cm57ZnJhY3Rpb246KDErYShjKSkvMixwaGFzZTouNSsuNSpjKihkPDA/LTE6MSkvTWF0aC5QSSxhbmdsZTpkfX07ZnVuY3Rpb24gWCh0LG4pe3JldHVybiBuZXcgRGF0ZSh0K24qSC8yNCl9Zi5nZXRNb29uVGltZXM9ZnVuY3Rpb24odCxuLGUsdSl7dmFyIHI9bmV3IERhdGUodCk7dT9yLnNldFVUQ0hvdXJzKDAsMCwwLDApOnIuc2V0SG91cnMoMCwwLDAsMCk7Zm9yKHZhciBsPS4xMzMqcyxjPWYuZ2V0TW9vblBvc2l0aW9uKHIsbixlKS5hbHRpdHVkZS1sLGQsZyxULFMsQyxMLHosSSxOLGIsUCxKLE8sdj0xO3Y8PTI0JiYoZD1mLmdldE1vb25Qb3NpdGlvbihYKHIsdiksbixlKS5hbHRpdHVkZS1sLGc9Zi5nZXRNb29uUG9zaXRpb24oWChyLHYrMSksbixlKS5hbHRpdHVkZS1sLEM9KGMrZykvMi1kLEw9KGctYykvMix6PS1MLygyKkMpLEk9KEMqeitMKSp6K2QsTj1MKkwtNCpDKmQsYj0wLE4+PTAmJihPPU1hdGguc3FydChOKS8oTWF0aC5hYnMoQykqMiksUD16LU8sSj16K08sTWF0aC5hYnMoUCk8PTEmJmIrKyxNYXRoLmFicyhKKTw9MSYmYisrLFA8LTEmJihQPUopKSxiPT09MT9jPDA/VD12K1A6Uz12K1A6Yj09PTImJihUPXYrKEk8MD9KOlApLFM9disoSTwwP1A6SikpLCEoVCYmUykpO3YrPTIpYz1nO3ZhciBZPXt9O3JldHVybiBUJiYoWS5yaXNlPVgocixUKSksUyYmKFkuc2V0PVgocixTKSksIVQmJiFTJiYoWVtJPjA/ImFsd2F5c1VwIjoiYWx3YXlzRG93biJdPSEwKSxZfSx0eXBlb2YgZXhwb3J0cz09Im9iamVjdCImJnR5cGVvZiBtb2R1bGU8InUiP21vZHVsZS5leHBvcnRzPWY6dHlwZW9mIGRlZmluZT09ImZ1bmN0aW9uIiYmZGVmaW5lLmFtZD9kZWZpbmUoZik6c2VsZi5TdW5DYWxjPWZ9KSgpO2Z1bmN0aW9uIG50KGgpe2NvbnN0IGk9TWF0aC5QSSxhPU1hdGguYXRhbixtPU1hdGguZXhwLHg9bShoKjIqaSk7cmV0dXJuKGEoeCktaS80KSozNjAvaX1mdW5jdGlvbiBfKGgsaSxhLG0seCxNKXtjb25zdCBEPTIqKngscz0xL0QqKGEraC9NKSxIPTEvRCoobStpL00pLFU9cyozNjAtMTgwLHA9bnQoMS1ILS41KTtyZXR1cm5bVSxwXX1hc3luYyBmdW5jdGlvbiBldChoLGksYSxtLHgsTSl7cmV0dXJuIG5ldyBQcm9taXNlKEQ9Pntjb25zdCBVPTEuMzMzMzMzMzMzMzMzMzMzMyxwPX5+KDEyOC8yKSxBPVt7eDowLHk6MH0se3g6MCx5OjEyOC0xfSx7eDoxMjgtMSx5OjEyOC0xfSx7eDoxMjgtMSx5OjB9LHt4OnAseTpwfSx7eDpwLHk6MH0se3g6cCx5OjEyOC0xfSx7eDowLHk6cH0se3g6MTI4LTEseTpwfV0ubWFwKG89Pntjb25zdFtqLHFdPV8oby54LG8ueSxoLGksYSwxMjgpLHthbHRpdHVkZTpmfT1TdW5DYWxjLmdldFBvc2l0aW9uKG0scSxqKTtyZXR1cm4gZioxODAvTWF0aC5QSX0pLGs9QS5ldmVyeShvPT5vPjApLEI9QS5ldmVyeShvPT5vPC02KSx5PWt8fEI/MjoxMjgsRT15KnksRj1uZXcgT2Zmc2NyZWVuQ2FudmFzKHkseSksUT1GLmdldENvbnRleHQoIjJkIiksUj1uZXcgSW1hZ2VEYXRhKHkseSksdz1uZXcgVWludDhDbGFtcGVkQXJyYXkoRSo0KTtmb3IobGV0IG89MDtvPEUqNDtvKz00KXtjb25zdCBqPW8vNCV5LHE9fn4oby80L3kpLFtmLEddPV8oaixxLGgsaSxhLHkpLHthbHRpdHVkZTpWfT1TdW5DYWxjLmdldFBvc2l0aW9uKG0sRyxmKSxLPVYqMTgwL01hdGguUEksVz0tSztNP0s+PTA/d1tvKzNdPTA6SzwtNj93W28rM109MjU1OndbbyszXT0xMjg6d1tvKzNdPTI1NSooMS8oMStNYXRoLmV4cCgtVSooVy02LzIpKSkpLHdbb109eFswXSx3W28rMV09eFsxXSx3W28rMl09eFsyXX1SLmRhdGEuc2V0KHcpLFEucHV0SW1hZ2VEYXRhKFIsMCwwKSxGLmNvbnZlcnRUb0Jsb2IoKS50aGVuKG89Pm8uYXJyYXlCdWZmZXIoKSkudGhlbihvPT57RChvKX0pfSl9c2VsZi5vbm1lc3NhZ2U9YXN5bmMgaD0+e2NvbnN0e3g6aSx5OmEsejptLHRpbWVzdGFtcDp4LGNvbG9yOk0sZGVidWc6RH09aC5kYXRhLHM9YXdhaXQgZXQoaSxhLG0seCxNLEQpO3Bvc3RNZXNzYWdlKHMsW3NdKX19KSgpOwo=", S = typeof window < "u" && window.Blob && new Blob([atob(a)], { type: "text/javascript;charset=utf-8" });
+function y() {
+  let o;
   try {
-    if (e = h && (window.URL || window.webkitURL).createObjectURL(h), !e)
+    if (o = S && (window.URL || window.webkitURL).createObjectURL(S), !o)
       throw "";
-    return new Worker(e);
+    return new Worker(o);
   } catch {
-    return new Worker("data:application/javascript;base64," + K);
+    return new Worker("data:application/javascript;base64," + a);
   } finally {
-    e && (window.URL || window.webkitURL).revokeObjectURL(e);
+    o && (window.URL || window.webkitURL).revokeObjectURL(o);
   }
 }
-const S = "crepuscule_protocole_<UNIQUE>", n = "crepuscule_source_<UNIQUE>", W = "crepuscule_layer_<UNIQUE>", u = {
+const r = "crepuscule_protocole_<UNIQUE>", n = "crepuscule_source_<UNIQUE>", m = "crepuscule_layer_<UNIQUE>", K = {
   color: [0, 0, 17],
   opacity: 0.7,
   date: /* @__PURE__ */ new Date(),
@@ -34,27 +34,27 @@ class c {
     s(this, "sourceId");
     s(this, "debug");
     s(this, "source");
-    const o = {
-      ...u,
+    const d = {
+      ...K,
       ...i
     };
-    this.map = t, this.color = o.color.slice(), this.opacity = o.opacity, this.date = o.date, this.debug = o.debug, this.unique = (Math.random() + 1).toString(36).substring(2), this.protocolNamespace = S.replace("<UNIQUE>", this.unique), this.tileUriPattern = `${this.protocolNamespace}://{z}-{x}-{y}-${+this.date}`, this.layerId = W.replace("<UNIQUE>", this.unique), this.sourceId = n.replace("<UNIQUE>", this.unique);
+    this.map = t, this.color = d.color.slice(), this.opacity = d.opacity, this.date = d.date, this.debug = d.debug, this.unique = (Math.random() + 1).toString(36).substring(2), this.protocolNamespace = r.replace("<UNIQUE>", this.unique), this.tileUriPattern = `${this.protocolNamespace}://{z}-{x}-{y}-${+this.date}`, this.layerId = m.replace("<UNIQUE>", this.unique), this.sourceId = n.replace("<UNIQUE>", this.unique);
   }
-  async generateTilePixelOnWorker(t, i, o, l) {
-    return new Promise((a) => {
-      const d = new L();
-      d.postMessage({ x: t, y: i, z: o, timestamp: l, color: this.color, debug: this.debug }), d.onmessage = (p) => {
-        a(p.data);
+  async generateTilePixelOnWorker(t, i, d, l) {
+    return new Promise((h) => {
+      const p = new y();
+      p.postMessage({ x: t, y: i, z: d, timestamp: l, color: this.color, debug: this.debug }), p.onmessage = (e) => {
+        h(e.data);
       };
     });
   }
   init() {
-    r(this.protocolNamespace, (t, i) => {
+    b(this.protocolNamespace, (t, i) => {
       if (!t.url)
         throw new Error("");
-      const [o, l, a, d] = t.url.split("/").pop().split("-").map((p) => parseFloat(p));
-      return this.generateTilePixelOnWorker(l, a, o, d).then((p) => {
-        i(null, p, null, null);
+      const [d, l, h, p] = t.url.split("/").pop().split("-").map((e) => parseFloat(e));
+      return this.generateTilePixelOnWorker(l, h, d, p).then((e) => {
+        i(null, e, null, null);
       }), { cancel: () => {
       } };
     }), this.map.addSource(this.sourceId, {
@@ -85,18 +85,18 @@ class c {
     this.date = t, this.tileUriPattern = `${this.protocolNamespace}://{z}-{x}-{y}-${+this.date}`, this.source.tiles[0] = this.tileUriPattern, this.source.load();
   }
 }
-class G {
+class k {
   constructor(t, i = {}) {
     s(this, "opacity");
     s(this, "crA");
     s(this, "crB");
     s(this, "usingA");
     s(this, "intervalId");
-    const o = {
-      ...u,
+    const d = {
+      ...K,
       ...i
     };
-    this.opacity = o.opacity, o.debug ? (this.crA = new c(t, { ...o, color: [70, 0, 0] }), this.crB = new c(t, { ...o, opacity: 0, color: [0, 0, 70] })) : (this.crA = new c(t, o), this.crB = new c(t, { ...o, opacity: 0 })), this.usingA = !0, this.intervalId = null;
+    this.opacity = d.opacity, d.debug ? (this.crA = new c(t, { ...d, color: [70, 0, 0] }), this.crB = new c(t, { ...d, opacity: 0, color: [0, 0, 70] })) : (this.crA = new c(t, d), this.crB = new c(t, { ...d, opacity: 0 })), this.usingA = !0, this.intervalId = null;
   }
   init() {
     this.crA.init(), this.crB.init(), this.start();
@@ -116,5 +116,5 @@ class G {
 }
 export {
   c as Crepuscule,
-  G as CrepusculeLive
+  k as CrepusculeLive
 };
