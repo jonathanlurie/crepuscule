@@ -33,13 +33,13 @@
     terrainControl: true,
   });
   
-  const crepusculeLive = new crepuscule.CrepusculeLive(map, {debug: false});
+  const crep = new crepuscule.Crepuscule(map, {debug: false});
   
   // map.showTileBoundaries = true;
   
   
   map.on("load", () => {
-    crepusculeLive.init();
+    crep.init();
   })
   
   </script>

@@ -29,6 +29,7 @@ export declare class Crepuscule {
     hide(options?: TransitionOptions): void;
     show(options?: TransitionOptions): void;
     setDate(date: Date): void;
+    update(): void;
 }
 export declare class CrepusculeLive {
     private opacity;
