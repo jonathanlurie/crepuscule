@@ -49,6 +49,7 @@ export class Crepuscule {
   private sourceId: string;
   private debug: boolean;
   private source!: Source;
+  private wasUnmounted = false;
 
   constructor(map: Map, options: CrepusculeOptions = {}) {
     const optionsWithDefault: CrepusculeOptions = {
@@ -74,9 +75,18 @@ export class Crepuscule {
       "<UNIQUE>",
       this.unique
     );
+
+    // Init of wait for init
+    if (map.loaded()) {
+      this.init();
+    } else {
+      map.once("load", () => {
+        this.init();
+      });
+    }
   }
 
-  async generateTilePixelOnWorker(
+  private async generateTilePixelOnWorker(
     x: number,
     y: number,
     z: number,
@@ -103,7 +113,7 @@ export class Crepuscule {
     });
   }
 
-  init() {
+  private init() {
     // Adding the protocole
     addProtocol(
       this.protocolNamespace,
@@ -149,6 +159,7 @@ export class Crepuscule {
   }
 
   setOpacity(o: number, options: TransitionOptions = {}) {
+    this.raiseIfUnmounted();
     this.opacity = o;
     this.map.setPaintProperty(this.layerId, "raster-opacity-transition", {
       duration: 0,
@@ -161,14 +172,17 @@ export class Crepuscule {
   }
 
   hide(options: TransitionOptions = {}) {
+    this.raiseIfUnmounted();
     this.setOpacity(0, options);
   }
 
   show(options: TransitionOptions = {}) {
+    this.raiseIfUnmounted();
     this.setOpacity(this.opacity, options);
   }
 
   setDate(date: Date) {
+    this.raiseIfUnmounted();
     this.date = date;
     this.tileUriPattern = `${this.protocolNamespace}://{z}-{x}-{y}-${+this
       .date}`;
@@ -179,7 +193,23 @@ export class Crepuscule {
   }
 
   update() {
+    this.raiseIfUnmounted();
     this.setDate(new Date());
+  }
+
+  unmount() {
+    this.raiseIfUnmounted();
+    this.map.removeLayer(this.layerId);
+    this.map.removeSource(this.sourceId);
+    this.wasUnmounted = true;
+  }
+
+  private raiseIfUnmounted() {
+    if (this.wasUnmounted) {
+      throw new Error(
+        "This Crepuscule instance was unmounted and can no longer be used."
+      );
+    }
   }
 }
 
@@ -189,6 +219,7 @@ export class CrepusculeLive {
   private crB: Crepuscule;
   private usingA: boolean;
   private intervalId!: NodeJS.Timeout | null;
+  private map!: Map;
 
   constructor(map: Map, options: CrepusculeOptions = {}) {
     const optionsWithDefault = {
@@ -196,6 +227,7 @@ export class CrepusculeLive {
       ...options,
     };
 
+    this.map = map;
     this.opacity = optionsWithDefault.opacity as number;
 
     if (optionsWithDefault.debug) {
@@ -215,12 +247,14 @@ export class CrepusculeLive {
 
     this.usingA = true;
     this.intervalId = null;
-  }
 
-  init() {
-    this.crA.init();
-    this.crB.init();
-    this.start();
+    if (map.loaded()) {
+      this.start();
+    } else {
+      map.once("load", () => {
+        this.start();
+      });
+    }
   }
 
   start() {
@@ -245,6 +279,16 @@ export class CrepusculeLive {
     // Wait some time to make sure the tiles are created
     toHide.setOpacity(0, { duration: 0, delay: 1000 });
     toShow.setOpacity(this.opacity, { duration: 0, delay: 1000 });
+
+    // This is necessary for refreshing the layer rendering even when the
+    // browser window is out of focus
+    this.map.triggerRepaint();
+  }
+
+  unmount() {
+    this.stop();
+    this.crA.unmount();
+    this.crB.unmount();
   }
 }
 

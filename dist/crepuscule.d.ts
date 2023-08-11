@@ -22,14 +22,17 @@ export declare class Crepuscule {
     private sourceId;
     private debug;
     private source;
+    private wasUnmounted;
     constructor(map: Map, options?: CrepusculeOptions);
-    generateTilePixelOnWorker(x: number, y: number, z: number, timestamp: number): Promise<unknown>;
-    init(): void;
+    private generateTilePixelOnWorker;
+    private init;
     setOpacity(o: number, options?: TransitionOptions): void;
     hide(options?: TransitionOptions): void;
     show(options?: TransitionOptions): void;
     setDate(date: Date): void;
     update(): void;
+    unmount(): void;
+    private raiseIfUnmounted;
 }
 export declare class CrepusculeLive {
     private opacity;
@@ -37,9 +40,10 @@ export declare class CrepusculeLive {
     private crB;
     private usingA;
     private intervalId;
+    private map;
     constructor(map: Map, options?: CrepusculeOptions);
-    init(): void;
     start(): void;
     stop(): void;
     _update(): void;
+    unmount(): void;
 }
