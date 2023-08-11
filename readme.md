@@ -79,4 +79,7 @@ const crepLiveObj = new crepuscule.CrepusculeLive(map, {...});
 
 crepLiveObj.stop();
 crepLiveObj.start();
+
+// A CrepusculeLive can also be unmounted
+crepLiveObj.unmount();
 ```
